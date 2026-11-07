@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>8-cat trade analyzer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<h1>8-cat trade analyzer</h1>
+<p class="sub">Enter per-game stats for your roster and for the players coming in. Mark who you are sending away and see how your team totals change in every category, and how the trade changes this week’s matchup. Field goals and free throws use makes and attempts, so team percentages are weighted correctly.</p>
+<p class="hint" id="dataStatus"></p>
+<datalist id="pl"></datalist>
+
+<div class="nav"><button data-tab="analyze" aria-pressed="true">Trade analyzer</button><button data-tab="find" aria-pressed="false">Trade finder</button></div>
+<section id="tab-analyze">
+<h2>Your roster</h2>
+<p class="sub">“Counts” means the player is in your active lineup. Uncheck bench players so they stay out of the totals.</p>
+<div class="wrap"><table id="rosterT"></table></div>
+<div class="bar"><button id="addR">Add player</button></div>
+
+<h2>Players you would receive</h2>
+<div class="wrap"><table id="incomingT"></table></div>
+<div class="bar"><button id="addI">Add player</button></div>
+
+<h2>Team totals change</h2>
+<div class="bar">
+<label for="games">Games per week</label><input type="number" id="games" value="1" min="1" max="7" step="1">
+<span class="hint">Use 1 for per-game totals, or your expected games per player for weekly totals.</span>
+</div>
+<div class="wrap"><table id="res"></table></div>
+<div class="verdict" id="verdict"></div>
+
+<h2>This week’s matchup</h2>
+<p class="sub">Enter the current score in each category for you and your opponent. Your final is projected as your score now plus your active players’ per-game stats times the games left. The opponent’s final is their score now plus anything you enter for their rest of week.</p>
+<div class="bar">
+<label for="left">Games left this week (per player)</label><input type="number" id="left" value="3" min="0" max="7" step="0.5">
+</div>
+<div class="wrap"><table id="matchIn"></table></div>
+<div class="wrap"><table id="mres"></table></div>
+<div class="verdict" id="mverdict"></div>
+<p class="hint">Inputs save in this browser. The sample players are placeholders: overwrite them with real numbers.</p>
+</section>
+<section id="tab-find" hidden>
+<h2>Trade finder</h2>
+<p class="sub">Tick the players you would give up, the opponent players you want, and the categories you need. The finder tries every combination and lists the trades that add the most in your needed categories while being at least as good for you as for the opponent. Player value is a z-score: how far each stat sits above or below the league’s rotation players. FG% and FT% are measured as makes above expectation, so shooting volume counts.</p>
+<h3>Players you would give up</h3>
+<p class="hint">Your roster is edited on the Trade analyzer tab.</p>
+<div id="offerList"></div>
+<h3>Opponent roster</h3>
+<p class="hint">Tick “Want” for the players you would take. Type a name to fill in stats.</p>
+<div class="wrap"><table id="oppT"></table></div>
+<div class="bar"><button id="addOpp">Add player</button></div>
+<h3>Categories you need</h3>
+<div id="needMe"></div>
+<h3>Categories the opponent needs (optional)</h3>
+<p class="hint">Marking these lets the finder look for trades that help both teams.</p>
+<div id="needOpp"></div>
+<h3>Rules</h3>
+<div class="set">
+<label>Most players per side <input type="number" id="sSize" min="1" max="3" data-o="set" data-k="size"></label>
+<label class="chk"><input type="checkbox" id="sEven" data-o="set" data-k="even"> Same number of players each side</label>
+<label>Opponent must gain at least <input type="number" id="sMin" step="0.1" data-o="set" data-k="oppMin"></label>
+<label>Weight on needed categories <input type="number" id="sBoost" min="1" max="5" step="0.5" data-o="set" data-k="boost"></label>
+</div>
+<p class="hint">Value for each team is the sum of its category changes, with needed categories counted at the weight above. A trade must be worth at least as much to you as to the opponent, and the opponent’s gain must meet the minimum (0 means they cannot lose value; a negative number lets them lose a little).</p>
+<div class="bar"><button class="primary" id="findBtn">Find best trades</button></div>
+<div id="results"></div>
+</section>
+</main>
+<script src="app.js"></script>
+<script src="finder.js"></script>
+</body>
+</html>
